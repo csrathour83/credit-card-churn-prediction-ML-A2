@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*:Zone.Identifier
+*.pdf
+ML_Assignment_2.md
