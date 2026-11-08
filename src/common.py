@@ -75,7 +75,8 @@ def train_and_evaluate(name, estimator):
     pipe.fit(X_train, y_train)
 
     y_pred = pipe.predict(X_test)
-    metrics = compute_metrics(y_test, y_pred, pipe.predict_proba(X_test)[:, 1])
+    y_prob = pipe.predict_proba(X_test)[:, 1]
+    metrics = compute_metrics(y_test, y_pred, y_prob)
     metrics = {k: round(float(v), 4) for k, v in metrics.items()}
 
     MODEL_DIR.mkdir(exist_ok=True)
@@ -84,17 +85,40 @@ def train_and_evaluate(name, estimator):
     (RESULTS_DIR / f"{name}.json").write_text(json.dumps(metrics, indent=2))
     _update_summary(name, metrics)
 
-    return {"metrics": metrics, "pipeline": pipe, "y_test": y_test, "y_pred": y_pred}
+    return {"metrics": metrics, "pipeline": pipe, "y_test": y_test,
+            "y_pred": y_pred, "y_prob": y_prob}
 
 
 def plot_confusion_matrix(y_true, y_pred, title=""):
     import matplotlib.pyplot as plt
-    from sklearn.metrics import ConfusionMatrixDisplay
+    import numpy as np
+    import seaborn as sns
+    from sklearn.metrics import confusion_matrix
 
-    disp = ConfusionMatrixDisplay.from_predictions(
-        y_true, y_pred, display_labels=CLASS_NAMES, cmap="Blues", colorbar=False
-    )
-    disp.ax_.set_title(title)
+    cm = confusion_matrix(y_true, y_pred)
+    names = np.array([["True Neg", "False Pos"], ["False Neg", "True Pos"]])
+    labels = [[f"{names[i, j]}\n{cm[i, j]}\n{cm[i, j] / cm.sum():.1%}" for j in range(2)] for i in range(2)]
+    fig, ax = plt.subplots(figsize=(5, 4))
+    sns.heatmap(cm, annot=labels, fmt="", cmap="Blues", cbar=False, ax=ax,
+                xticklabels=CLASS_NAMES, yticklabels=CLASS_NAMES)
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    ax.set_title(title)
+    plt.show()
+
+
+def plot_roc_curve(y_true, y_prob, title=""):
+    import matplotlib.pyplot as plt
+    from sklearn.metrics import roc_auc_score, roc_curve
+
+    fpr, tpr, _ = roc_curve(y_true, y_prob)
+    fig, ax = plt.subplots(figsize=(5, 4))
+    ax.plot(fpr, tpr, lw=2, label=f"AUC = {roc_auc_score(y_true, y_prob):.3f}")
+    ax.plot([0, 1], [0, 1], ls="--", c="grey", label="Random guess")
+    ax.set_xlabel("False positive rate")
+    ax.set_ylabel("True positive rate (Recall)")
+    ax.set_title(title)
+    ax.legend(loc="lower right")
     plt.show()
 
 
