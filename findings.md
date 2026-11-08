@@ -16,8 +16,8 @@ Working draft; final tables go into README.md.
 
 | ML Model Name                     | Observation about model performance |
 |-----------------------------------|-------------------------------------|
-| Logistic Regression               |                                     |
-| Decision Tree                     |                                     |
+| Logistic Regression               | Train and test scores are almost the same, so there is no overfitting. AUC is good (0.932), but recall is 0.612, so it misses about 39% of churned customers. As a linear model, it cannot capture combinations of features (for example, low transaction count together with low amount). |
+| Decision Tree                     | Second best model (F1 0.790, MCC 0.755). The default tree overfit, so depth was limited to 6 using CV. This improved test AUC from 0.88 to 0.95. Recall (0.742) is much better than Logistic Regression. |
 | KNN                               | Accuracy is high (0.916), but recall for churned customers is only 0.563, so it misses about 44% of them. Precision is good (0.863): when it predicts churn, it is usually correct. It has the highest precision but the lowest recall, F1 and MCC among the models so far. |
 | Naive Bayes                       | Lowest scores among the models so far (accuracy 0.870, F1 0.581, MCC 0.504). Recall (0.563) is the same as KNN, but precision is only 0.600, so 4 out of 10 churn predictions are wrong. It assumes features are independent, but many features here are related (e.g. transaction amount and count), which is likely why it does worse. |
 | Support Vector Machine            | Best scores of all models (accuracy 0.944, AUC 0.966, F1 0.818, MCC 0.786). Highest recall (0.782): it finds about 78% of churned customers. Precision (0.858) is close to the best (KNN, 0.863). C=10 and gamma="scale" were chosen with 5-fold CV. |
