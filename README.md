@@ -2,8 +2,8 @@
 
 ML Assignment 2: five classification models trained on the same dataset, compared on six metrics, and shown in a Streamlit app.
 
-- **GitHub repository:** https://github.com/csrathour83/credit-card-churn-prediction-ML-A2
-- **Live Streamlit app:** _add link after deployment_
+- **GitHub repository:** <https://github.com/csrathour83/credit-card-churn-prediction-ML-A2>
+- **Live Streamlit app:** <https://credit-card-churn-prediction-ml-a2-n7hdihztgnre5pwrh9zsmg.streamlit.app/>
 
 ---
 
@@ -45,7 +45,15 @@ This is a **binary classification** problem:
 
 ---
 
-## c. Models used
+## c. GitHub repository link
+
+<https://github.com/csrathour83/credit-card-churn-prediction-ML-A2>
+
+The repository contains `app.py`, `requirements.txt`, `README.md`, `test_data.csv`, the saved models for all five classifiers in `model/`, and the training notebooks in `notebooks/`.
+
+---
+
+## d. Models used
 
 All five models use the same split and the same preprocessing.
 
